@@ -23,6 +23,7 @@ export default function HomePage() {
   const [imageUrl, setImageUrl] = useState("");
   const [twitterURL, setTwitterURL] = useState("");
   const [portfolioURL, setPortfolioURL] = useState("");
+  const [skills, setSkills] = useState<string[]>([]);
 
   const [stats, setStats] = useState<UserStats | undefined>(undefined);
   const [streak, setStreak] = useState<StreakStats | undefined>(undefined);
@@ -38,9 +39,10 @@ export default function HomePage() {
           transition={{
             staggerChildren: 0.08,
           }}
-          className="grid max-w-7x mx-auto grid-flow-dense grid-cols-12 gap-4 w-full"
+          className="grid max-w-7xl mx-auto grid-flow-dense grid-cols-12 gap-4 w-full"
         >
           <HeaderBlock />
+
           <SocialsBlock
             setName={setName}
             setGithubURL={setGithubURL}
@@ -49,13 +51,16 @@ export default function HomePage() {
             setStats={setStats}
             setStreak={setStreak}
             setGraph={setGraph}
+            setSkills={setSkills}
           />
 
           <BioBlock
             setLinkedinURL={setLinkedinURL}
             setPortfolioURL={setPortfolioURL}
           />
+          
         </motion.div>
+
         <BentoGrid
           name={name}
           githubURL={githubURL}
@@ -66,13 +71,18 @@ export default function HomePage() {
           streak={streak}
           graph={graph}
           portfolioUrl={portfolioURL}
+          skills={skills}
         />
       </div>
     </div>
   );
 }
 
+
 const HeaderBlock = () => (
+
+  // Header block, as the component name suggests
+
   <Block className="col-span-12 row-span-2 md:col-span-6 relative">
     <h1 className="mb-4 text-3xl sm:text-4xl font-bold sm:leading-normal">
       Make your Github Profile <Highlight>modern and trendy !</Highlight>

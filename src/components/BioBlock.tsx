@@ -18,6 +18,7 @@ export default function BioBlock({
   const [lUrl, setLUrl] = useState("");
   const [pUrl, setPUrl] = useState("");
   return (
+
     <>
       <div className="col-span-12 sm:col-span-6 grid-rows-4 md:col-span-3 space-y-4">
         <Block className="bg-gradient-to-br from-blue-500 to-purple-600 h-[230px]">

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Space_Grotesk } from "next/font/google";
 import { cn } from "@/lib/utils";
+import { skillOptions } from "@/constant/skills";
 import confetti from "canvas-confetti";
 import {
   AlertDialog,
@@ -54,6 +55,7 @@ const BentoGrid = ({
   streak,
   graph,
   portfolioUrl,
+  skills,
 }: {
   name: string;
   githubURL: string;
@@ -64,6 +66,7 @@ const BentoGrid = ({
   streak: StreakStats | undefined;
   graph: Graph[] | undefined;
   portfolioUrl: string;
+  skills: string[];
 }) => {
   const [bentoLink, setBentoLink] = useState<string>("");
 
@@ -148,7 +151,9 @@ const BentoGrid = ({
       githubURL,
     )}&x=${encodeURIComponent(twitterURL)}&l=${encodeURIComponent(
       linkedinURL,
-    )}&p=${encodeURIComponent(portfolioUrl)}&z=${encodeURIComponent(randomId)}`;
+    )}&p=${encodeURIComponent(portfolioUrl)}&z=${encodeURIComponent(
+      randomId
+    )}&s=${encodeURIComponent(JSON.stringify(skills))}`;
     try {
       const res = await fetch(apiURL);
       const data = await res.json();
@@ -172,6 +177,9 @@ const BentoGrid = ({
   };
 
   return (
+
+    // Bento output section
+
     <div className={cn("max-w-5xl mx-auto", space.className)}>
       <div className="sm:p-4 grid relative grid-cols-1 md:grid-cols-4 gap-y-4 sm:gap-4 max-w-5xl mt-32 mb-8 w-full mx-auto">
         <div className="text-white py-6 px-8 rounded-lg bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-600 to col-span-1 row-span-1 min-h-32">
@@ -261,6 +269,35 @@ const BentoGrid = ({
             className="absolute -bottom-28 -right-28"
           />
         </div>
+
+        {skills.length > 0 && (
+          <div className="bg-muted p-4 rounded-lg col-span-4 row-span-1">
+            <h3 className="text-xl font-bold text-center text-gray-200 mb-3">
+              Skills
+            </h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {skills.map((skill) => {
+                // Find the skill data from the skillOptions array
+                const skillData = skillOptions.find((s) => s.name === skill);
+                return (
+                  <div
+                    key={skill}
+                    className="flex items-center gap-2 px-3 py-1 bg-blue-500 text-white rounded-lg shadow-md hover:scale-105 transition"
+                  >
+                    {skillData && (
+                      <img
+                        src={skillData.logo}
+                        alt={skill}
+                        className="w-6 h-6 rounded-md"
+                      />
+                    )}
+                    <span className="font-medium">{skill}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {stats && (
           <div className="grid gap-4 grid-cols-4 col-span-4 row-span-2">
@@ -372,10 +409,10 @@ const BentoGrid = ({
                       </p>
                       <p className="text-xs text-gray-500 mt-2">
                         {streak?.longestStreakStartDate &&
-                        streak?.longestStreakEndDate
+                          streak?.longestStreakEndDate
                           ? streak?.longestStreakStartDate +
-                            " - " +
-                            streak?.longestStreakEndDate
+                          " - " +
+                          streak?.longestStreakEndDate
                           : "No streak yet"}
                       </p>
                     </div>
@@ -391,10 +428,10 @@ const BentoGrid = ({
                     </p>
                     <p className="text-sm text-gray-500">
                       {streak?.currentStreakStartDate &&
-                      streak?.currentStreakEndDate
+                        streak?.currentStreakEndDate
                         ? streak?.currentStreakStartDate +
-                          " - " +
-                          streak?.currentStreakEndDate
+                        " - " +
+                        streak?.currentStreakEndDate
                         : new Date().toLocaleDateString()}
                     </p>
                   </div>
