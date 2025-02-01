@@ -118,7 +118,7 @@ const BentoGrid = ({
         imageUrl,
       )}&p=${encodeURIComponent(portfolioUrl)}&z=${encodeURIComponent(
         randomId,
-      )}`;
+      )}&s=${encodeURIComponent(JSON.stringify(skills))}`;
 
       fileContent = `const apiUrl = "${apiUrl}";\n` + fileContent;
 
