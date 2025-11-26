@@ -107,7 +107,7 @@ const BentoGrid = ({
 
       let fileContent = await response.text();
 
-      const apiUrl = `https://opbento.edgexhq.tech/api/bento?n=${encodeURIComponent(
+      const apiUrl = `https://opbento.vercel.app/api/bento?n=${encodeURIComponent(
         name,
       )}&g=${encodeURIComponent(githubURL)}&x=${encodeURIComponent(
         twitterURL,
@@ -486,7 +486,7 @@ const BentoGrid = ({
                 </div>
                 <div className="flex gap-2 relative ">
                   <Input
-                    value={`[![OpBento](${bentoLink})](https://opbento.edgexhq.tech)`}
+                    value={`[![OpBento](${bentoLink})](https://opbento.vercel.app)`}
                     readOnly
                     className="focus:ring-offset-secondary pr-16"
                   />
