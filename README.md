@@ -61,9 +61,9 @@ If you find OP Bento helpful, please give us a ⭐ on GitHub and share it with o
 
 ## 😎 Authors 
 
+- Arghya Ghosh [@arghyaxcodes](git.new/arghyaxcodes)
 - Subhadeep Roy [@subhadeeproy3902](git.new/Subha)
 - Anish Biswas [@Xeven777](git.new/anish)
-- Arghya Ghosh [@uiuxarghya](git.new/uiuxarghya)
 
 ---
 
