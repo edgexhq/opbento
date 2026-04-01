@@ -372,7 +372,18 @@ ${contributionStats.longestStreakStartDate} - ${contributionStats.longestStreakE
       height: 1160,
       deviceScaleFactor: 1.4,
     });
-    await page.setContent(html, { waitUntil: "networkidle0" });
+    // Use a 15-second timeout so slow/unavailable external resources (e.g.,
+    // Tailwind CDN, Lucide JS, external images) don't hang the serverless
+    // function indefinitely and trigger a 500 error.
+    page.setDefaultNavigationTimeout(15000);
+    try {
+      await page.setContent(html, { waitUntil: "networkidle2" });
+    } catch (timeoutError) {
+      // networkidle2 timed out — core scripts (Tailwind, Lucide) load quickly,
+      // so the screenshot will still be correct even if a slow external resource
+      // never finished. Log and continue rather than returning 500.
+      console.warn("Page networkidle2 timed out, proceeding with screenshot:", timeoutError);
+    }
     await new Promise((resolve) => setTimeout(resolve, 700));
     const screenshot = await page.screenshot({ type: "png" });
     await browser.close();
