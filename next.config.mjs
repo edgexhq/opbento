@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    serverComponentsExternalPackages: ["puppeteer-core"],
+    serverComponentsExternalPackages: ["puppeteer-core", "@sparticuz/chromium-min"],
   },
   images: {
     remotePatterns: [

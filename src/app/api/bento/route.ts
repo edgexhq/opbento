@@ -14,6 +14,7 @@ import { generateContributionGraph } from "@/utils/generate-graph";
 import { fetchYearContributions } from "@/actions/fetchYearContribution";
 import type { UserStats } from "@/types";
 
+export const dynamic = "force-dynamic";
 export const maxDuration = 45;
 
 export async function GET(req: NextRequest) {
