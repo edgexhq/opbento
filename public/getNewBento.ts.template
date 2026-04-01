@@ -17,4 +17,4 @@ const fetchBentoUrl = async (apiUrl: string): Promise<string> => {
 };
 
 // @ts-ignore
-fetchBentoUrl(apiUrl);
+await fetchBentoUrl(apiUrl);
