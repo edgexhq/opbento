@@ -31,6 +31,9 @@ export async function fetchYearContributions(
     from: start,
     to: end,
   });
+  if (!data?.data?.user?.contributionsCollection?.contributionCalendar?.weeks) {
+    return [];
+  }
   const weeks =
     data.data.user.contributionsCollection.contributionCalendar.weeks;
 

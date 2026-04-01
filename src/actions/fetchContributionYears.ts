@@ -16,5 +16,8 @@ export async function fetchContributionYears(
   `;
 
   const data = await fetchGitHubData(query, { user: username });
+  if (!data?.data?.user?.contributionsCollection?.contributionYears) {
+    return [];
+  }
   return data.data.user.contributionsCollection.contributionYears;
 }
