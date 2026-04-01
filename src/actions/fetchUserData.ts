@@ -53,6 +53,19 @@ const userStatsQuery = `
   }
 `;
 
+export const defaultUserStats: UserStats = {
+  Followers: 0,
+  Repositories: 0,
+  Organizations: 0,
+  Gists: 0,
+  "Pull Requests": 0,
+  Issues: 0,
+  Commits: 0,
+  Sponsors: 0,
+  "Contributed To": 0,
+  "Star Earned": 0,
+};
+
 const fetchUserData = async (
   login: string,
 ): Promise<{ userStats: UserStats }> => {
@@ -64,10 +77,14 @@ const fetchUserData = async (
     }
     `;
 
-  const response: GitHubResponse = await githubGraphql({
+  const response: GitHubResponse | null = await githubGraphql({
     query,
     variables: { username: login },
   });
+
+  if (!response?.user) {
+    return { userStats: defaultUserStats };
+  }
 
   const { user } = response;
 

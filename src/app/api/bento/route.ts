@@ -1,4 +1,4 @@
-import fetchUserData from "@/actions/fetchUserData";
+import fetchUserData, { defaultUserStats } from "@/actions/fetchUserData";
 import { fetchContributions } from "@/actions/githubGraphql";
 import chromium from "@sparticuz/chromium-min";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,6 +12,7 @@ import {
 import { storage } from "@/lib/firebase";
 import { generateContributionGraph } from "@/utils/generate-graph";
 import { fetchYearContributions } from "@/actions/fetchYearContribution";
+import type { UserStats } from "@/types";
 
 export const maxDuration = 45;
 
@@ -30,19 +31,13 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Github username is required", { status: 400 });
   }
 
-  const firebaseurl =
-    "https://firebasestorage.googleapis.com/v0/b/smartkaksha-fe32c.appspot.com/o/opbento%2F" +
-    g +
-    uniqueId +
-    ".png?alt=media";
+  const storagePath = `opbento/${g}${uniqueId}.png`;
 
   try {
-    const previousImageRef = ref(storage, firebaseurl);
-    if (previousImageRef) {
-      await deleteObject(previousImageRef).catch((error) => {
-        console.error("Error deleting previous image:", error);
-      });
-    }
+    const previousImageRef = ref(storage, storagePath);
+    await deleteObject(previousImageRef).catch((error) => {
+      console.error("Error deleting previous image:", error);
+    });
   } catch (error) {
     console.error("Error deleting previous image:", error);
   }
@@ -51,10 +46,34 @@ export async function GET(req: NextRequest) {
   let graphSVG = "";
   if (g) {
     const currentYear = new Date().getFullYear();
-    const contributionDays = await fetchYearContributions(g, currentYear);
+    let contributionDays: { date: string; contributionCount: number }[] = [];
+    try {
+      contributionDays = await fetchYearContributions(g, currentYear);
+    } catch (error) {
+      console.error("Failed to fetch year contributions:", error);
+    }
     graphSVG = generateContributionGraph(contributionDays);
-    const { userStats } = await fetchUserData(g);
-    const contributionStats = await fetchContributions(g);
+    let userStats: UserStats = { ...defaultUserStats };
+    try {
+      ({ userStats } = await fetchUserData(g));
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+    let contributionStats = {
+      totalContributions: 0,
+      firstDateofContribution: null as string | null,
+      longestStreak: 0,
+      longestStreakStartDate: null as string | null,
+      longestStreakEndDate: null as string | null,
+      currentStreak: 0,
+      currentStreakStartDate: null as string | null,
+      currentStreakEndDate: null as string | null,
+    };
+    try {
+      contributionStats = await fetchContributions(g);
+    } catch (error) {
+      console.error("Failed to fetch contributions:", error);
+    }
 
     htmlofGithubStats = `
 <div class="grid gap-4 grid-cols-4 col-span-4 row-span-2">
@@ -389,7 +408,7 @@ ${contributionStats.longestStreakStartDate} - ${contributionStats.longestStreakE
     await browser.close();
 
     const blob = new Blob([screenshot], { type: "image/png" });
-    const storageRef = ref(storage, `opbento/${g}${uniqueId}.png`);
+    const storageRef = ref(storage, storagePath);
 
     await uploadBytes(storageRef, blob, { cacheControl: "public, max-age=60" });
     const downloadUrl = await getDownloadURL(storageRef);
