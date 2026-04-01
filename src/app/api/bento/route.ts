@@ -4,13 +4,7 @@ import { fetchContributions } from "@/actions/githubGraphql";
 import chromium from "@sparticuz/chromium-min";
 import { NextRequest, NextResponse } from "next/server";
 import puppeteer from "puppeteer-core";
-import {
-  ref,
-  uploadBytes,
-  deleteObject,
-  getDownloadURL,
-} from "firebase/storage";
-import { storage } from "@/lib/firebase";
+import { getSql, ensureBentoTable } from "@/lib/db";
 import { generateContributionGraph } from "@/utils/generate-graph";
 import { fetchYearContributions } from "@/actions/fetchYearContribution";
 import type { UserStats } from "@/types";
@@ -32,16 +26,8 @@ export async function GET(req: NextRequest) {
     return new NextResponse("Github username is required", { status: 400 });
   }
 
-  const storagePath = `opbento/${g}${uniqueId}.png`;
-
-  try {
-    const previousImageRef = ref(storage, storagePath);
-    await deleteObject(previousImageRef).catch((error) => {
-      console.error("Error deleting previous image:", error);
-    });
-  } catch (error) {
-    console.error("Error deleting previous image:", error);
-  }
+  // Ensure table exists (no-op if already created)
+  await ensureBentoTable();
 
   let htmlofGithubStats = ``;
   let graphSVG = "";
@@ -408,18 +394,23 @@ ${contributionStats.longestStreakStartDate} - ${contributionStats.longestStreakE
     const screenshot = await page.screenshot({ type: "png" });
     await browser.close();
 
-    const blob = new Blob([screenshot], { type: "image/png" });
-    const storageRef = ref(storage, storagePath);
+    const base64 = Buffer.from(screenshot).toString("base64");
 
-    await uploadBytes(storageRef, blob, { cacheControl: "public, max-age=60" });
-    const downloadUrl = await getDownloadURL(storageRef);
-    const url = new URL(downloadUrl);
-    url.searchParams.delete("token");
-    const newUrl = url.toString();
-    return new NextResponse(JSON.stringify({ url: newUrl }), {
+    const sql = getSql();
+    await sql`
+      INSERT INTO bento_images (username, unique_id, image_data, updated_at)
+      VALUES (${g}, ${uniqueId}, ${base64}, NOW())
+      ON CONFLICT (username, unique_id)
+      DO UPDATE SET image_data = EXCLUDED.image_data, updated_at = NOW()
+    `;
+
+    const origin = new URL(req.url).origin;
+    const imageUrl = `${origin}/api/bento/image?g=${encodeURIComponent(g)}&z=${encodeURIComponent(uniqueId)}`;
+
+    return new NextResponse(JSON.stringify({ url: imageUrl }), {
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, max-age=60",
+        "Cache-Control": "no-store",
       },
     });
   } catch (error) {

@@ -1,12 +1,20 @@
-import { neon } from "@neondatabase/serverless";
+import { neon, NeonQueryFunction } from "@neondatabase/serverless";
 
-export const sql = neon(process.env.DATABASE_URL!);
+let _sql: NeonQueryFunction<false, false> | null = null;
+
+export function getSql(): NeonQueryFunction<false, false> {
+  if (!_sql) {
+    _sql = neon(process.env.DATABASE_URL!);
+  }
+  return _sql;
+}
 
 /**
  * Ensures the bento_images table exists.
- * Call once at cold-start in the bento route.
+ * Call once at the start of the bento route handler.
  */
 export async function ensureBentoTable() {
+  const sql = getSql();
   await sql`
     CREATE TABLE IF NOT EXISTS bento_images (
       id         SERIAL PRIMARY KEY,
