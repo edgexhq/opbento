@@ -1,5 +1,3 @@
-"use server";
-
 interface UserData {
   followers: { totalCount: number };
   repositoriesWithStargazerCount: {

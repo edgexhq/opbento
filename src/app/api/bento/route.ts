@@ -1,4 +1,5 @@
-import fetchUserData, { defaultUserStats } from "@/actions/fetchUserData";
+import fetchUserData from "@/actions/fetchUserData";
+import { defaultUserStats } from "@/actions/userStatsConstants";
 import { fetchContributions } from "@/actions/githubGraphql";
 import chromium from "@sparticuz/chromium-min";
 import { NextRequest, NextResponse } from "next/server";

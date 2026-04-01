@@ -4,7 +4,7 @@ import {
   CircleUser,
   Save,
   Loader2,
-  Image,
+  ImageIcon,
 } from "lucide-react";
 import Block from "./ui/Block";
 import { Input } from "./ui/input";
@@ -98,7 +98,7 @@ export default function SocialsBlock({
 
       <Block className="col-span-12 sm:col-span-6 bg-gradient-to-br from-yellow-500 to-rose-400 md:col-span-3">
         <div className="grid h-full text-3xl text-white py-4">
-          <Image size={18} className="w-5 h-5 absolute top-2 left-2" />
+          <ImageIcon size={18} className="w-5 h-5 absolute top-2 left-2" />
           <h1 className="text-2xl font-bold mx-auto mb-2 text-yellow-200">
             Image URL
           </h1>

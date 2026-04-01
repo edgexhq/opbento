@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import chromium from "@sparticuz/chromium-min";
 import { NextRequest, NextResponse } from "next/server";
 import puppeteer from "puppeteer-core";
