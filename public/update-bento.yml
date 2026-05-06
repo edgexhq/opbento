@@ -31,11 +31,3 @@ jobs:
       - name: Update Bento
         run: |
           bun getNewBento.ts
-
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add README.md
-          git diff --staged --quiet || git commit -m "chore: refresh bento image [skip ci]"
-          git push
