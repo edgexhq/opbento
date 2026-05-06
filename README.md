@@ -19,14 +19,14 @@
 
 Setting up OP Bento is quick and easy! Follow these steps:
 
-1. **Visit [OP Bento](https://opbento.edgexhq.tech)** to fill out your bio, add favorite projects, and customize your profile grid.
+1. **Visit [OP Bento](https://opbento.vercel.app)** to fill out your bio, add favorite projects, and customize your profile grid.
 2. **Click "Generate"** to create your bento setup files:
    - **`getNewBento.ts`**: Holds all the code for fetching your GitHub data.
    - **`update-bento.yml`**: A GitHub workflow file for automatic updates to your bento grid.
 3. **Add the files** to your GitHub profile repository.
 4. **Update your README.md** with the generated bento code, and watch your profile transform!
 
-For a full step-by-step guide, check out our [documentation](https://opbento.edgexhq.tech/guide) 📚.
+For a full step-by-step guide, check out our [documentation](https://opbento.vercel.app/guide) 📚.
 
 ---
 

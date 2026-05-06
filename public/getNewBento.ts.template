@@ -16,5 +16,39 @@ const fetchBentoUrl = async (apiUrl: string): Promise<string> => {
   }
 };
 
-// @ts-ignore
+// Replace these values with your own
+const apiUrl =
+  `https://opbento.vercel.app/api/bento?` +
+  `n=${encodeURIComponent("YOUR_NAME")}&` +
+  `g=${encodeURIComponent("YOUR_GITHUB_USERNAME")}&` +
+  `i=${encodeURIComponent("YOUR_AVATAR_URL")}&` +
+  `x=${encodeURIComponent("YOUR_TWITTER_HANDLE")}&` +
+  `l=${encodeURIComponent("YOUR_LINKEDIN_HANDLE")}&` +
+  `p=${encodeURIComponent("YOUR_PORTFOLIO_URL")}&` +
+  `z=${encodeURIComponent("YOUR_UNIQUE_ID")}`;
+
+const username = "YOUR_GITHUB_USERNAME";
+const uniqueId = "YOUR_UNIQUE_ID";
+
+// Regenerate the bento image on the server
 await fetchBentoUrl(apiUrl);
+
+// Append a timestamp to the README image URL so GitHub's Camo proxy is forced
+// to re-fetch the image instead of serving its cached version.
+const ts = Date.now();
+const newImageUrl =
+  `https://opbento.vercel.app/api/bento/image?` +
+  `g=${encodeURIComponent(username)}&` +
+  `z=${encodeURIComponent(uniqueId)}&` +
+  `t=${ts}`;
+
+const readmePath = "README.md";
+const readme = await Bun.file(readmePath).text();
+
+const updated = readme.replace(
+  /https:\/\/opbento\.vercel\.app\/api\/bento\/image\?[^\s)"']*/g,
+  newImageUrl,
+);
+
+await Bun.write(readmePath, updated);
+console.log("README updated with:", newImageUrl);
